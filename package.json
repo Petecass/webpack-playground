@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:lint": "eslint . --cache",
+    "test:sasslint": "sass-lint 'app/styles/**/**.scss' --verbose --no-exit --ignore 'app/styles/vendor/**'",
+    "test:jslint": "eslint . --cache",
     "start": "nodemon --watch webpack.config.js --exec \"webpack-dev-server --env development\"",
     "build": "webpack --env production",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -27,6 +28,7 @@
     "nodemon": "^1.11.0",
     "npm-install-webpack-plugin": "^4.0.4",
     "postcss-loader": "^1.2.1",
+    "sass-lint": "^1.10.2",
     "style-loader": "^0.13.1",
     "webpack": "^2.2.0-rc.3",
     "webpack-dev-server": "^2.2.0-rc.0",
