@@ -1,0 +1,35 @@
+{
+  "name": "webpackDemo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:lint": "eslint . --cache",
+    "start": "nodemon --watch webpack.config.js --exec \"webpack-dev-server --env development\"",
+    "build": "webpack --env production",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^6.6.1",
+    "css-loader": "^0.26.1",
+    "eslint": "^3.13.1",
+    "eslint-config-airbnb": "^14.0.0",
+    "eslint-loader": "^1.6.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^3.0.2",
+    "eslint-plugin-react": "^6.9.0",
+    "fast-sass-loader": "^1.0.7",
+    "html-webpack-plugin": "^2.26.0",
+    "node-sass": "^4.2.0",
+    "nodemon": "^1.11.0",
+    "npm-install-webpack-plugin": "^4.0.4",
+    "postcss-loader": "^1.2.1",
+    "style-loader": "^0.13.1",
+    "webpack": "^2.2.0-rc.3",
+    "webpack-dev-server": "^2.2.0-rc.0",
+    "webpack-merge": "^2.3.1"
+  }
+}
