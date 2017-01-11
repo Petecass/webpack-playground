@@ -33,11 +33,28 @@ const common = merge(
         title: 'Webpack demo',
       }),
     ],
-  },
-  parts.lintJavaScript(PATHS.app)
+  }
 );
 
 module.exports = function masterConfig(env) {
+  if (env === 'production') {
+    return merge(
+      common,
+      {
+        output: {
+          // Tweak this to match your GitHub project name
+          publicPath: '/webpack-demo/',
+        },
+      },
+      parts.lintJavaScript(PATHS.app),
+      parts.loadJavaScript(PATHS.app),
+      parts.extractBundles(),
+      parts.clean(PATHS.build),
+      parts.generateSourcemaps('source-map'),
+      parts.extractCSS(),
+      parts.purifyCSS(PATHS.app)
+    );
+  }
   return merge(
     common,
     {
@@ -48,6 +65,7 @@ module.exports = function masterConfig(env) {
         new webpack.NamedModulesPlugin(),
       ],
     },
+    parts.generateSourcemaps('eval-source-map'),
     parts.styles(),
     parts.devServer({
       host: process.env.HOST,
@@ -55,3 +73,4 @@ module.exports = function masterConfig(env) {
     })
   );
 };
+

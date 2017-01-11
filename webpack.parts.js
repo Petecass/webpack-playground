@@ -1,6 +1,9 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable import/no-extraneous-dependencies, comma-dangle */
 
 const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const PurifyCSSPlugin = require('purifycss-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 exports.devServer = function devServer(options) {
   return {
@@ -68,5 +71,125 @@ exports.styles = function styles(paths) {
         },
       ],
     },
+  };
+};
+
+exports.extractCSS = function extractCSS(paths) {
+  return {
+    module: {
+      rules: [
+        {
+          test: /\.(scss|sass)$/,
+          // Restrict extraction process to the given
+          // paths.
+          include: paths,
+          loader: ExtractTextPlugin.extract({
+            fallbackLoader: 'style-loader',
+            loader: 'css-loader!fast-sass-loader',
+          }),
+        },
+      ],
+    },
+    plugins: [
+      // Output extracted CSS to a file
+      new ExtractTextPlugin('styles/[name].css'),
+    ],
+  };
+};
+
+exports.purifyCSS = function purifyCSS(paths) {
+  const files = Array.isArray(paths) ? paths : [paths];
+
+  return {
+    plugins: [
+      new PurifyCSSPlugin({
+        // Our paths are absolute so Purify needs patching
+        // against that to work.
+        basePath: '/',
+
+        // `paths` is used to point PurifyCSS to files not
+        // visible to Webpack. This expects glob patterns so
+        // we adapt here.
+        paths: files.map(path => `${path}/*`),
+
+        // Walk through only html files within node_modules. It
+        // picks up .js files by default!
+        resolveExtensions: ['.html'],
+        purifyOptions: {
+          info: true,
+          minify: true,
+        },
+      }),
+    ],
+  };
+};
+
+exports.generateSourcemaps = function generateSourcemaps(type) {
+  return {
+    devtool: type,
+  };
+};
+
+
+exports.extractBundles = function extractBundles() {
+  // const entry = {};
+  // const names = [];
+  //
+  // // Set up entries and names.
+  // bundles.forEach(({ name, entries }) => {
+  //   if (entries) {
+  //     entry[name] = entries;
+  //   }
+  //
+  //   names.push(name);
+  // });
+
+  return {
+    // Define an entry point needed for splitting.
+    // entry,
+    plugins: [
+      // Extract bundles.
+      new webpack.optimize.CommonsChunkPlugin({
+        name: 'vendor',
+        minChunks: (module, count) => {
+          const userRequest = module.userRequest;
+
+          // You can perform other similar checks here too.
+          // Now we check just node_modules.
+          return userRequest && userRequest.includes('node_modules');
+        }
+      }),
+    ],
+  };
+};
+
+exports.loadJavaScript = function loadJavaScript(paths) {
+  return {
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          include: paths,
+
+          loader: 'babel-loader',
+          options: {
+            // Enable caching for improved performance during
+            // development.
+            // It uses default OS directory by default. If you need
+            // something more custom, pass a path to it.
+            // I.e., { cacheDirectory: '<path>' }
+            cacheDirectory: true
+          }
+        }
+      ]
+    }
+  };
+};
+
+exports.clean = function clean(path) {
+  return {
+    plugins: [
+      new CleanWebpackPlugin([path])
+    ]
   };
 };

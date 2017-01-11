@@ -1,8 +1,10 @@
 
-export default function () {
+
+module.exports = function component() {
   const element = document.createElement('h1');
 
-  element.innerHTML = 'Hello Universe';
+  element.className = 'pure-button';
+  element.innerHTML = 'Hello world';
 
   return element;
-}
+};
